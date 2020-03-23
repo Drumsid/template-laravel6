@@ -51,23 +51,19 @@ class CategoryController extends Controller
 
         if (isset($image)) {
             $currentDate = Carbon::now()->toDateString();
-            $imageName = $slug . '-' . $currentDate . uniqid() . '.' .$image->getClientOriginalExtension();
+            $imageName = $slug . '-' . $currentDate . uniqid() . '.' . $image->getClientOriginalExtension();
 
             // for category image
-            if (!Storage::disk('public')->exists('category')) {
-                Storage::disk('public')->makeDirectory('category');
-            }
+            $this->dirExists('category');
 
-            $category = Image::make($image)->resize(1600, 479)->stream();
-            Storage::disk('public')->put('category/' . $imageName, $category);
+            $categoryImage = Image::make($image)->resize(1600, 479)->stream();
+            Storage::disk('public')->put('category/' . $imageName, $categoryImage);
 
             // for slider image
-            if (!Storage::disk('public')->exists('category/slider')) {
-                Storage::disk('public')->makeDirectory('category/slider');
-            }
+            $this->dirExists('category/slider');
 
-            $slider = Image::make($image)->resize(500, 333)->stream();
-            Storage::disk('public')->put('category/slider/' . $imageName, $slider);
+            $sliderImage = Image::make($image)->resize(500, 333)->stream();
+            Storage::disk('public')->put('category/slider/' . $imageName, $sliderImage);
         } else {
             $imageName = 'default.png';
         }
@@ -122,35 +118,27 @@ class CategoryController extends Controller
 
         if (isset($image)) {
             $currentDate = Carbon::now()->toDateString();
-            $imageName = $slug . '-' . $currentDate . uniqid() . '.' .$image->getClientOriginalExtension();
+            $imageName = $slug . '-' . $currentDate . uniqid() . '.' . $image->getClientOriginalExtension();
 
             // create dir for category image
-            if (!Storage::disk('public')->exists('category')) {
-                Storage::disk('public')->makeDirectory('category');
-            }
+            $this->dirExists('category');
 
             // delete category image
-            if (Storage::disk('public')->exists('category/' . $category->image)) {
-                Storage::disk('public')->delete('category/' . $category->image);
-            }
+            $this->deleteImage('category/', $category->image);
 
             // add category image
             $categoryImage = Image::make($image)->resize(1600, 479)->stream();
             Storage::disk('public')->put('category/' . $imageName, $categoryImage);
 
             // create dir for slider image
-            if (!Storage::disk('public')->exists('category/slider')) {
-                Storage::disk('public')->makeDirectory('category/slider');
-            }
+            $this->dirExists('category/slider');
 
             // delete slider image
-            if (Storage::disk('public')->exists('category/slider/' . $category->image)) {
-                Storage::disk('public')->delete('category/slider/' . $category->image);
-            }
+            $this->deleteImage('category/slider/', $category->image);
 
             // add slider image
-            $slider = Image::make($image)->resize(500, 333)->stream();
-            Storage::disk('public')->put('category/slider/' . $imageName, $slider);
+            $sliderImage = Image::make($image)->resize(500, 333)->stream();
+            Storage::disk('public')->put('category/slider/' . $imageName, $sliderImage);
         } else {
             $imageName = $category->image;
         }
@@ -169,8 +157,33 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        $category = Category::findOrFail($category->id);
+        if ($category) {
+            $category->delete();
+
+            // delete category image
+            $this->deleteImage('category/', $category->image);
+
+            // delete slider image
+            $this->deleteImage('category/slider/', $category->image);
+        }
+
+        return redirect(route('admin.category.index'))->with('successMsg', 'Tag deleted!!!');
+    }
+
+    public function dirExists($dir)
+    {
+        if (!Storage::disk('public')->exists($dir)) {
+            Storage::disk('public')->makeDirectory($dir);
+        }
+    }
+
+    public function deleteImage($dir, $img)
+    {
+        if (Storage::disk('public')->exists($dir . $img)) {
+            Storage::disk('public')->delete($dir . $img);
+        }
     }
 }
