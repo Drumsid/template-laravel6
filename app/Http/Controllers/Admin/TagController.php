@@ -39,8 +39,9 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required'
+            'name' => ['required', 'min:2']
         ]);
+
         $tag = new Tag();
         $tag->name = $request->name;
         $tag->slug = str_slug($request->name);
@@ -66,9 +67,9 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Tag $tag)
     {
-        //
+        return view('admin.tag.edit', compact('tag'));
     }
 
     /**
@@ -78,9 +79,17 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tag $tag)
     {
-        //
+        $this->validate($request, [
+            'name' => ['required', 'min:2']
+        ]);
+        $tag->update([
+            'name' => $request->name,
+            'slug' => str_slug($request->name)
+        ]);
+
+        return redirect(route('admin.tag.index'))->with('successMsg', 'Tag updated!!!');
     }
 
     /**
@@ -89,8 +98,13 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
-        //
+        $tag = Tag::findOrFail($tag->id);
+        if ($tag) {
+            $tag->delete();
+
+        }
+        return redirect(route('admin.tag.index'))->with('successMsg', 'Tag deleted!!!');
     }
 }
