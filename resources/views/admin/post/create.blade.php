@@ -79,14 +79,16 @@
                                 
                             </div>
                         </div>
-                        {{-- <div class="form-group form-float">
+                        <div class="form-group form-float">
                             <div class="form-line">
                                 <label for="tag">Select Tag</label>
                                 <select name="tags[]" id="tag" class="form-control show-tick" data-live-search="true" multiple>
-
+                                    @foreach ($tags as $tag)
+                                        <option value="$tag->id"> {{ $tag->name }} </option>
+                                    @endforeach
                                 </select>
                             </div>
-                        </div> --}}
+                        </div>
                     <a class="btn btn-danger m-t-15 waves-effect" href="{{ route('admin.post.index') }}">BACK</a>
                         <button type="submit" class="btn btn-primary m-t-15 waves-effect">Add</button>
 

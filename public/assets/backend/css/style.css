@@ -4095,7 +4095,9 @@ section.content {
       -ms-box-shadow: none !important;
       box-shadow: none !important;
       border: none;
-      margin-left: 30px; }
+      padding: 0 0 0 20px; /* добавил отступ а то не красиво*/
+      /* margin-left: 30px; форма уползает при создании поста и добавлении категории */
+     }
   .bootstrap-select .bs-searchbox {
     position: relative; }
     .bootstrap-select .bs-searchbox:after {
@@ -4103,7 +4105,7 @@ section.content {
       font-family: 'Material Icons';
       position: absolute;
       top: 0;
-      left: 10px;
+      right: 10px; /* убрал иконку багается  если слева*/
       font-size: 25px; }
   .bootstrap-select ul.dropdown-menu {
     margin-top: 0 !important; }
