@@ -30,6 +30,7 @@
                 <div class="header">
                     <h2>
                         All Tags
+                        <span class="badge bg-green">{{ $tags->count() }}</span>
                     </h2>
                 </div>
                 <div class="body">
@@ -39,6 +40,7 @@
                                 <tr>
                                     <th>Count</th>
                                     <th>Name</th>
+                                    <th>Post Count</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Action</th>
@@ -48,6 +50,7 @@
                                 <tr>
                                     <th>Count</th>
                                     <th>Name</th>
+                                    <th>Post Count</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Action</th>
@@ -59,6 +62,7 @@
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $tag->name }}</td>
+                                        <td><span class="badge bg-green">{{ $tag->posts->count() }}</span></td>
                                         <td>{{ $tag->created_at }}</td>
                                         <td>{{ $tag->updated_at }}</td>
                                         <td class="text-center">
