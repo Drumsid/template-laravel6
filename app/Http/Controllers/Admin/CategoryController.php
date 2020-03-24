@@ -9,7 +9,6 @@ use App\Category;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
-
 class CategoryController extends Controller
 {
     /**
@@ -142,11 +141,11 @@ class CategoryController extends Controller
         } else {
             $imageName = $category->image;
         }
-
-        $category->name = $request->name;
-        $category->slug = $slug;
-        $category->image = $imageName;
-        $category->save();
+        $category->update([
+            'name' => $request->name,
+            'slug' => $slug,
+            'image' => $imageName,
+        ]);
 
         return redirect(route('admin.category.index'))->with('successMsg', 'Category updated!!!');
     }
