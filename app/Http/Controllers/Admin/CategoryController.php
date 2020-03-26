@@ -52,7 +52,7 @@ class CategoryController extends Controller
             $currentDate = Carbon::now()->toDateString();
             $imageName = $slug . '-' . $currentDate . uniqid() . '.' . $image->getClientOriginalExtension();
 
-            // for category image
+            // check category dir is exists
             $this->dirExists('category');
 
             $categoryImage = Image::make($image)->resize(1600, 479)->stream();
