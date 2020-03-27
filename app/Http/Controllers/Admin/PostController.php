@@ -47,8 +47,8 @@ class PostController extends Controller
     {
         // return dd($request->all());
         $this->validate($request, [
-            'title' => 'required',
-            'image' => 'required',
+            'title' => 'required|min:3',
+            'image' => 'mimes:jpg,png,jpeg',
             'categories' => 'required',
             'tags' => 'required',
             'body' => 'required',
@@ -94,7 +94,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('admin.post.show', compact('post'));
     }
 
     /**
@@ -105,7 +105,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('admin.post.edit', compact('categories', 'tags', 'post'));
     }
 
     /**
@@ -117,7 +119,50 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required|min:3',
+            'image' => 'mimes:jpg,png,jpeg',
+            'categories' => 'required',
+            'tags' => 'required',
+            'body' => 'required',
+        ]);
+
+        $image = $request->file('image');
+        $slug = str_slug($request->title);
+        $status = isset($request->status) ? true : false;
+
+        if (isset($image)) {
+            $currentDate = Carbon::now()->toDateString();
+            $imageName = $slug . '-' . $currentDate . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            // check post dir is exists
+            $this->dirExists('post');
+
+            // delete category image
+            $this->deleteImage('post/', $post->image);
+
+            $postImage = Image::make($image)->resize(1600, 1066)->stream();
+            Storage::disk('public')->put('post/' . $imageName, $postImage);
+        } else {
+            $imageName = $post->image;
+        }
+
+        $post->update([
+            'title' => $request->title,
+            'image' => $imageName,
+            'slug' => $slug,
+            'status' => $status,
+            'body' => $request->body
+        ]);
+
+        // удаляем все теги и записываем по новой
+        // $post->categories()->detach();
+        $post->categories()->sync(request('categories'));
+
+        // $post->tags()->detach();
+        $post->tags()->sync(request('tags'));
+
+        return redirect(route('admin.post.index'))->with('successMsg', 'Post updated!!!');
     }
 
     /**
@@ -128,13 +173,30 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post = Post::findOrFail($post->id);
+        if ($post) {
+            $post->categories()->detach();
+            $post->tags()->detach();
+            $post->delete();
+
+            // delete post image
+            $this->deleteImage('post/', $post->image);
+        }
+
+        return redirect(route('admin.post.index'))->with('successMsg', 'Post was deleted!!!');
     }
 
     public function dirExists($dir)
     {
         if (!Storage::disk('public')->exists($dir)) {
             Storage::disk('public')->makeDirectory($dir);
+        }
+    }
+
+    public function deleteImage($dir, $img)
+    {
+        if (Storage::disk('public')->exists($dir . $img)) {
+            Storage::disk('public')->delete($dir . $img);
         }
     }
 }

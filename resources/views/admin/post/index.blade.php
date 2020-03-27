@@ -88,6 +88,9 @@
                                         <td>{{ $post->created_at }}</td>
                                         <td>{{ $post->updated_at }}</td>
                                         <td class="text-center">
+                                        <a href="{{ route('admin.post.show', $post) }}" class="btn btn-info waves-effect">
+                                            <i class="material-icons">visibility</i>
+                                        </a>
                                         <a href="{{ route('admin.post.edit', $post) }}" class="btn btn-info waves-effect">
                                             <i class="material-icons">edit</i>
                                         </a>
