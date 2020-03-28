@@ -26,5 +26,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        view()->composer('layouts.backend.partial.sidebar', function ($view) {
+            $view->with('postApprove', \App\Post::where('is_approved', false)->get());
+        });
     }
 }

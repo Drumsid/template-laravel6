@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Author;
 
 use App\Http\Controllers\Controller;
 use App\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Tag;
 use App\Category;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -21,8 +21,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->get();
-        return view('admin.post.index', compact('posts'));
+        $posts = Auth::User()->posts()->latest()->get();
+        return view('author.post.index', compact('posts'));
     }
 
     /**
@@ -34,7 +34,7 @@ class PostController extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
-        return view('admin.post.create', compact('categories', 'tags'));
+        return view('author.post.create', compact('categories', 'tags'));
     }
 
     /**
@@ -45,7 +45,6 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        // return dd($request->all());
         $this->validate($request, [
             'title' => 'required|min:3',
             'image' => 'mimes:jpg,png,jpeg',
@@ -77,13 +76,13 @@ class PostController extends Controller
         $post->slug = $slug;
         $post->body = $request->body;
         $post->status = isset($request->status) ? true : false;
-        $post->is_approved = true;
+        $post->is_approved = false;
         $post->save();
 
         $post->categories()->attach($request->categories);
         $post->tags()->attach($request->tags);
 
-        return redirect(route('admin.post.index'))->with('successMsg', 'Post succesfull added!!!');
+        return redirect(route('author.post.index'))->with('successMsg', 'Post succesfull added!!!');
     }
 
     /**
@@ -94,7 +93,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('admin.post.show', compact('post'));
+        if ($post->user_id != Auth::id()) {
+            return redirect()->back();
+        }
+        return view('author.post.show', compact('post'));
     }
 
     /**
@@ -105,9 +107,12 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        if ($post->user_id != Auth::id()) {
+            return redirect()->back();
+        }
         $categories = Category::all();
         $tags = Tag::all();
-        return view('admin.post.edit', compact('categories', 'tags', 'post'));
+        return view('author.post.edit', compact('categories', 'tags', 'post'));
     }
 
     /**
@@ -119,6 +124,9 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        if ($post->user_id != Auth::id()) {
+            return redirect()->back();
+        }
         $this->validate($request, [
             'title' => 'required|min:3',
             'image' => 'mimes:jpg,png,jpeg',
@@ -156,29 +164,13 @@ class PostController extends Controller
         ]);
 
         // удаляем все теги и записываем по новой
-        // $post->categories()->detach();
         $post->categories()->sync(request('categories'));
 
-        // $post->tags()->detach();
         $post->tags()->sync(request('tags'));
 
-        return redirect(route('admin.post.index'))->with('successMsg', 'Post updated!!!');
+        return redirect(route('author.post.index'))->with('successMsg', 'Post updated!!!');
     }
 
-    public function pending()
-    {
-        $posts = Post::where('is_approved', false)->get();
-        return view('admin.post.pending', compact('posts'));
-    }
-
-    public function approval(Post $post)
-    {
-        $post = Post::findOrFail($post->id);
-        $post->update([
-            'is_approved' => true
-        ]);
-        return redirect(route('admin.post.pending'))->with('successMsg', 'Post approved!!!');
-    }
     /**
      * Remove the specified resource from storage.
      *
@@ -187,6 +179,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->user_id != Auth::id()) {
+            return redirect()->back();
+        }
         $post = Post::findOrFail($post->id);
         if ($post) {
             $post->categories()->detach();
@@ -197,7 +192,7 @@ class PostController extends Controller
             $this->deleteImage('post/', $post->image);
         }
 
-        return redirect(route('admin.post.index'))->with('successMsg', 'Post was deleted!!!');
+        return redirect(route('author.post.index'))->with('successMsg', 'Post was deleted!!!');
     }
 
     public function dirExists($dir)
@@ -211,6 +206,13 @@ class PostController extends Controller
     {
         if (Storage::disk('public')->exists($dir . $img)) {
             Storage::disk('public')->delete($dir . $img);
+        }
+    }
+
+    public function checkUserId(Post $post)
+    {
+        if ($post->user_id != Auth::id()) {
+            return redirect()->back();
         }
     }
 }
