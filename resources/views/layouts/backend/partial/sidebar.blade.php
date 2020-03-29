@@ -62,6 +62,12 @@
                         <span class="badge bg-green {{ $postApprove->count() == 0 ? 'my-d-none' : '' }}">{{ $postApprove->count() }}</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('admin/subscriber') ? 'active' : '' }}">
+                    <a href="{{ route('admin.subscriber.index') }}">
+                        <i class="material-icons">subscriptions</i>
+                        <span>All Subscriber</span>
+                    </a>
+                </li>
                 <li class="header">System</li>
                 <li><a class="dropdown-item" href="{{ route('logout') }}"
                     onclick="event.preventDefault();

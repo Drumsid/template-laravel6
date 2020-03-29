@@ -113,7 +113,18 @@
 
 <section class="blog-area section">
     <div class="container">
-
+        @if (session('successMsg'))
+            <div class="alert alert-success m-t-15" role="alert">
+            {{ session('successMsg') }}  
+            </div> 
+        @endif
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-danger m-t-15" role="alert">
+                    {{ $error }}  
+                </div> 
+            @endforeach
+        @endif
         <div class="row">
 
             <div class="col-lg-4 col-md-6">
