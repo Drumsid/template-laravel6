@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\AuthorPostAprroved;
 
 class PostController extends Controller
 {
@@ -47,7 +48,7 @@ class PostController extends Controller
     {
         // return dd($request->all());
         $this->validate($request, [
-            'title' => 'required|min:3',
+            'title' => 'required|min:3|unique:posts',
             'image' => 'mimes:jpg,png,jpeg',
             'categories' => 'required',
             'tags' => 'required',
@@ -177,6 +178,7 @@ class PostController extends Controller
         $post->update([
             'is_approved' => true
         ]);
+        $post->user->notify(new AuthorPostAprroved($post));
         return redirect(route('admin.post.pending'))->with('successMsg', 'Post approved!!!');
     }
     /**

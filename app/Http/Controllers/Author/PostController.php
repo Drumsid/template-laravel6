@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Tag;
 use App\Category;
 use Carbon\Carbon;
+use App\User;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\NewAuthorPost;
+use Illuminate\Support\Facades\Notification;
 
 class PostController extends Controller
 {
@@ -46,7 +49,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'title' => 'required|min:3',
+            'title' => 'required|min:3|unique:posts',
             'image' => 'mimes:jpg,png,jpeg',
             'categories' => 'required',
             'tags' => 'required',
@@ -81,6 +84,9 @@ class PostController extends Controller
 
         $post->categories()->attach($request->categories);
         $post->tags()->attach($request->tags);
+
+        $users = User::where('role_id', 1)->get();
+        Notification::send($users, new NewAuthorPost($post));
 
         return redirect(route('author.post.index'))->with('successMsg', 'Post succesfull added!!!');
     }

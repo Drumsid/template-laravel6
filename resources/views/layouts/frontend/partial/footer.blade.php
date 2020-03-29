@@ -41,7 +41,7 @@
 
                     <h4 class="title"><b>SUBSCRIBE</b></h4>
                     <div class="input-area">
-
+ 
                     <form method="POST" action="{{ route('subscriber.store') }}">
                         @csrf
                             <input class="email-input" type="email" name="email" placeholder="Enter your email">
