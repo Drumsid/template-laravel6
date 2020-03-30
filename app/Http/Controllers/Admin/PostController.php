@@ -12,6 +12,9 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AuthorPostAprroved;
+use App\Subscriber;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewPostNotify;
 
 class PostController extends Controller
 {
@@ -83,6 +86,12 @@ class PostController extends Controller
 
         $post->categories()->attach($request->categories);
         $post->tags()->attach($request->tags);
+
+        $subscribers = Subscriber::all();
+        foreach ($subscribers as $subscriber) {
+            Notification::route('mail', $subscriber->email)
+                ->notify(new NewPostNotify($post));
+        }
 
         return redirect(route('admin.post.index'))->with('successMsg', 'Post succesfull added!!!');
     }
@@ -178,7 +187,15 @@ class PostController extends Controller
         $post->update([
             'is_approved' => true
         ]);
+
         $post->user->notify(new AuthorPostAprroved($post));
+
+        $subscribers = Subscriber::all();
+        foreach ($subscribers as $subscriber) {
+            Notification::route('mail', $subscriber->email)
+                ->notify(new NewPostNotify($post));
+        }
+
         return redirect(route('admin.post.pending'))->with('successMsg', 'Post approved!!!');
     }
     /**
