@@ -21,7 +21,6 @@
             <div class="col-lg-2 col-md-0"></div>
             <div class="col-lg-8 col-md-12">
                 <div class="post-wrapper">
-
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

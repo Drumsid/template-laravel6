@@ -69,6 +69,12 @@
                     </a>
                 </li>
                 <li class="header">System</li>
+                <li class="{{ Request::is('admin/settings') ? 'active' : '' }}">
+                    <a href="{{ route('admin.settings') }}">
+                        <i class="material-icons">settings</i>
+                        <span>User settings</span>
+                    </a>
+                </li>
                 <li><a class="dropdown-item" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
                                   document.getElementById('logout-form').submit();">
@@ -95,6 +101,12 @@
                     </a>
                 </li>
                 <li class="header">System</li>
+                <li class="{{ Request::is('author/settings') ? 'active' : '' }}">
+                    <a href="{{ route('author.settings') }}">
+                        <i class="material-icons">settings</i>
+                        <span>User settings</span>
+                    </a>
+                </li>
                 <li><a class="dropdown-item" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">

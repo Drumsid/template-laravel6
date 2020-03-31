@@ -106,7 +106,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        // dd($request->file('image'));
+        // dd($request->all());
         $this->validate($request, [
             'name' => 'required|min:3',
             'image' => 'mimes:jpg,png,jpeg'

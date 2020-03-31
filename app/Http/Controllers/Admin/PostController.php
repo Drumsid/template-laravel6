@@ -87,6 +87,7 @@ class PostController extends Controller
         $post->categories()->attach($request->categories);
         $post->tags()->attach($request->tags);
 
+        // оповещения на почту будут проблемы если, просто убрать этот блок
         $subscribers = Subscriber::all();
         foreach ($subscribers as $subscriber) {
             Notification::route('mail', $subscriber->email)
@@ -188,6 +189,7 @@ class PostController extends Controller
             'is_approved' => true
         ]);
 
+        // оповещения на почту будут проблемы если, просто убрать этот блок
         $post->user->notify(new AuthorPostAprroved($post));
 
         $subscribers = Subscriber::all();

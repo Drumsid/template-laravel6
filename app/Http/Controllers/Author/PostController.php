@@ -85,6 +85,7 @@ class PostController extends Controller
         $post->categories()->attach($request->categories);
         $post->tags()->attach($request->tags);
 
+        // оповещения на почту будут проблемы если, просто убрать этот блок
         $users = User::where('role_id', 1)->get();
         Notification::send($users, new NewAuthorPost($post));
 
