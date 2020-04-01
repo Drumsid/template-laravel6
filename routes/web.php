@@ -20,6 +20,10 @@ Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
 
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('favorite/{post}/add', 'FavoriteController@add')->name('post.favorite');
+});
+
 Route::group(
     ['as' => 'admin.', 'prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']],
     function () {
@@ -36,6 +40,8 @@ Route::group(
         Route::get('pending/post', 'PostController@pending')->name('post.pending');
         Route::put('post/{post}/approve', 'PostController@approval')->name('post.approve');
 
+        Route::get('/favorite', 'FavoriteController@index')->name('favorite.index');
+
         Route::get('/subscriber', 'SubscriberController@index')->name('subscriber.index');
         Route::delete('/subscriber/{subscriber}', 'SubscriberController@destroy')->name('subscriber.destroy');
     }
@@ -47,6 +53,8 @@ Route::group(
         Route::get('settings', 'SettingsController@index')->name('settings');
         Route::put('profile-update', 'SettingsController@updateProfile')->name('profile.update');
         Route::put('password-update', 'SettingsController@updatePassword')->name('password.update');
+
+        Route::get('/favorite', 'FavoriteController@index')->name('favorite.index');
 
         Route::get('dashboard', 'DashboardController@index')->name('dashboard');
         Route::resource('post', 'PostController');
