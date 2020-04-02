@@ -71,5 +71,6 @@
 @endsection
 
 @push('js')
-
+<script src="{{ asset('assets/frontend/js/swiper.js') }}"></script>
+<script src="{{ asset('assets/frontend/js/scripts.js') }}"></script>
 @endpush
