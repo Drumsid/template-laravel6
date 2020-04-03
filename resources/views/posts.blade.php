@@ -40,11 +40,11 @@
                                     <li>
                                         {{-- если надо чтоб лайкал любой юзер, убираем условие гость и меняем в роутере post.favorite условие для авторизации, хотя так не сработает, наверно придется делать регистрацию--}}
                                         @guest
-                                            <a href="#" onclick="fav()"><i class="ion-heart"></i>
+                                            <a href="{{ route('post.details', $post->slug) }}" {{-- onclick="fav()" --}}><i class="ion-heart"></i>
                                             {{ $post->favorite_to_users->count() }}
                                             </a>
                                         @else
-                                        <a class="{{ !Auth::user()->favorite_posts->where('pivot.post_id', $post->id)->count() == 0 ? 'favoritePost' : 'no' }}" href="javascript::void(0)" onclick="document.getElementById('favorite-form-{{ $post->id }}').submit();"><i class="ion-heart"></i>
+                                        <a class="{{ !Auth::user()->favorite_posts->where('pivot.post_id', $post->id)->count() == 0 ? 'favoritePost' : 'no' }}" href="{{ route('post.details', $post->slug) }}{{-- javascript::void(0) --}}" {{-- onclick="document.getElementById('favorite-form-{{ $post->id }}').submit();" --}}><i class="ion-heart"></i>
                                                 {{ $post->favorite_to_users->count() }}
                                             </a>
                                         <form method="POST" action="{{ route('post.favorite', $post) }}" id="favorite-form-{{ $post->id }}" style="display: none;">
@@ -52,8 +52,8 @@
                                         </form>
                                         @endguest
                                     </li>
-                                    <li><a href="#"><i class="ion-chatbubble"></i>6</a></li>
-                                <li><a href="#"><i class="ion-eye"></i>{{ $post->view_count }}</a></li>
+                                    <li><a href="{{ route('post.details', $post->slug) }}"><i class="ion-chatbubble"></i>6</a></li>
+                                <li><a href="{{ route('post.details', $post->slug) }}"><i class="ion-eye"></i>{{ $post->view_count }}</a></li>
                                 </ul>
 
                             </div><!-- blog-info -->

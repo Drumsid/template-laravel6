@@ -29,7 +29,11 @@
 
 <section class="post-area section">
     <div class="container">
-
+        @if (session('successMsg'))
+            <div class="alert alert-success m-t-15" role="alert">
+            {{ session('successMsg') }}  
+            </div> 
+        @endif
         <div class="row">
 
             <div class="col-lg-8 col-md-12 no-right-padding">
@@ -175,7 +179,7 @@
 
                             <ul class="post-footer">
                                 <li>
-                                    <a href="{{ route('post.details', $randomPost->slug) }}" onclick="fav()"><i class="ion-heart"></i>
+                                    <a href="{{ route('post.details', $randomPost->slug) }}" {{-- onclick="fav()" --}} ><i class="{{ !Auth::user()->favorite_posts->where('pivot.post_id', $post->id)->count() == 0 ? 'favoritePost' : 'no' }} ion-heart"></i>
                                         {{ $randomPost->favorite_to_users->count() }}
                                     </a> 
                                 </li>
@@ -326,4 +330,16 @@
 @push('js')
 <script src="{{ asset('assets/frontend/js/swiper.js') }}"></script>
 <script src="{{ asset('assets/frontend/js/scripts.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+    function fav()
+    {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'info',
+            title: 'Oops...',
+            text: 'To liked this, you need login first!'
+            })
+    }
+</script>
 @endpush
