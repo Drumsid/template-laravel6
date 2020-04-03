@@ -66,7 +66,12 @@
                     <a href="{{ route('admin.favorite.index') }}">
                         <i class="material-icons">favorite</i>
                         <span>Favorite Posts</span>
-                        <span class="badge bg-green {{ $postApprove->count() == 0 ? 'my-d-none' : '' }}">{{ $postApprove->count() }}</span>
+                    </a>
+                </li>
+                <li class="{{ Request::is('admin/comments') ? 'active' : '' }}">
+                    <a href="{{ route('admin.comments.index') }}">
+                        <i class="material-icons">comment</i>
+                        <span>All Comments</span>
                     </a>
                 </li>
                 <li class="{{ Request::is('admin/subscriber') ? 'active' : '' }}">
@@ -75,6 +80,7 @@
                         <span>All Subscriber</span>
                     </a>
                 </li>
+
                 <li class="header">System</li>
                 <li class="{{ Request::is('admin/settings') ? 'active' : '' }}">
                     <a href="{{ route('admin.settings') }}">

@@ -1,6 +1,6 @@
 @extends('layouts.backend.app')
 
-@section('title', 'Favorite Post')
+@section('title', 'Comments')
 
 @push('css')
     <link href="{{ asset('assets/backend/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css') }}" rel="stylesheet">
@@ -9,7 +9,6 @@
 @section('content')
 <div class="container-fluid">
     <div class="block-header">
-
     @if (session('successMsg'))
         <div class="alert alert-success m-t-15" role="alert">
           {{ session('successMsg') }}  
@@ -26,57 +25,73 @@
             <div class="card">
                 <div class="header">
                     <h2>
-                        All Pending Posts
-                        <span class="badge bg-green">{{ $posts->count() }}</span>
+                        All Comments
+                        <span class="badge bg-green">{{ $comments->count() }}</span>
                     </h2>
-                
                 </div>
                 <div class="body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover dataTable js-exportable">
                             <thead>
                                 <tr>
-                                    <th>Count</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th><i class="material-icons">favorite</i></th>
-                                    <th><i class="material-icons">comment</i></th>
-                                    <th><i class="material-icons">visibility</i></th>
+                                    <th>Comments info</th>
+                                    <th>Post info</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Count</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th><i class="material-icons">favorite</i></th>
-                                    <th><i class="material-icons">comment</i></th>
-                                    <th><i class="material-icons">visibility</i></th>
+                                    <th>Comments info</th>
+                                    <th>Post info</th>
                                     <th>Action</th>
                                 </tr>
                             </tfoot>
 
                             <tbody>
-                                @foreach ($posts as $key => $post)
+                                @foreach ($comments as $key => $comment)
                                     <tr>
-                                        <td>{{ $key + 1 }}</td>
-                                        <td>{{ str_limit($post->title, 15) }}</td>
-                                        <td>{{ $post->user->name }}</td>
-                                        <td>{{ $post->favorite_to_users->count() }}</td>
-                                        <td>{{ $post->comments->count() }}</td>
-                                        <td>{{ $post->view_count }}</td>
-                                       
-                                     
+                                        <td>
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <a href="">
+                                                        <img src="{{ Storage::disk('public')->url('profile/' . $comment->user->image) }}" height="64" width="64" class="media-object">
+                                                    </a>
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>{{ $comment->user->name }}
+                                                    <small>{{ $comment->created_at->toFormattedDateString() }}</small>
+                                                    </h4>
+                                                <p>{{ $comment->comment }}</p>
+                                                <a target="/blank" href="{{ route('post.details', $comment->post->slug . '#comments' . $comment->id) }}">Replay</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <a target="/blank" href="{{ route('post.details', $comment->post->slug) }}">
+                                                        <img src="{{ Storage::disk('public')->url('post/' . $comment->post->image) }}" height="64" width="64" class="media-object">
+                                                    </a>
+                                                </div>
+                                                <div class="media-body">
+                                                    <a target="/blank" href="{{ route('post.details', $comment->post->slug) }}">
+                                                        <h4 class="media-heading">
+                                                            {{ str_limit($comment->post->title, 40) }}
+                                                        </h4>
+                                                    </a>
+                                                    <p>by <strong>{{ $comment->post->user->name }}</strong></p>
+                                                </div>
+
+                                            </div>
+                                        </td>
                                         <td class="text-center">
-                                        <a href="{{ route('admin.post.show', $post) }}" class="btn btn-info waves-effect" title="show">
-                                            <i class="material-icons">visibility</i>
-                                        </a>
-                                        <button class="btn btn-danger waves-effect" onclick="removePost({{ $post->id }})" title="delete">
+                                        <button class="btn btn-danger waves-effect" onclick="deleteComment({{ $comment->id }})">
                                             <i class="material-icons">delete</i>
                                         </button>
-                                    <form id="remove-form-{{ $post->id }}" action="{{ route('post.favorite', $post) }}" method="POST" style="display:none;">
+
+                                    <form id="delete-form-{{ $comment->id }}" action="{{ route('admin.comments.destroy', $comment) }}" method="POST" style="display:none;">
                                         @csrf
+                                        @method('DELETE')
                                     </form>
                                         </td>
                                     </tr>
@@ -104,12 +119,11 @@
     <script src="{{ asset('assets/backend/plugins/jquery-datatable/extensions/export/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/backend/plugins/jquery-datatable/extensions/export/buttons.print.min.js') }}"></script>
 
-
     <!-- Custom Js -->
     <script src="{{ asset('assets/backend/js/pages/tables/jquery-datatable.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
-        function removePost(id)
+        function deleteComment(id)
         {
             const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -130,7 +144,7 @@
             }).then((result) => {
             if (result.value) {
                 event.preventDefault();
-                document.getElementById('remove-form-' + id).submit();
+                document.getElementById('delete-form-' + id).submit();
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
@@ -143,6 +157,5 @@
             }
             })
         }
-
     </script>
 @endpush

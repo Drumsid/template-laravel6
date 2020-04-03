@@ -24,6 +24,8 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
     Route::post('favorite/{post}/add', 'FavoriteController@add')->name('post.favorite');
+
+    Route::post('comment/{post}', 'CommentController@store')->name('comment.store');
 });
 
 Route::group(
@@ -46,6 +48,9 @@ Route::group(
 
         Route::get('/subscriber', 'SubscriberController@index')->name('subscriber.index');
         Route::delete('/subscriber/{subscriber}', 'SubscriberController@destroy')->name('subscriber.destroy');
+
+        Route::get('/comments', 'CommentController@index')->name('comments.index');
+        Route::delete('/comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
     }
 );
 
