@@ -30,5 +30,8 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('layouts.backend.partial.sidebar', function ($view) {
             $view->with('postApprove', \App\Post::where('is_approved', false)->get());
         });
+        view()->composer('layouts.frontend.partial.footer', function ($view) {
+            $view->with('allCategories', \App\Category::all());
+        });
     }
 }

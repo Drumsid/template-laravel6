@@ -67,7 +67,7 @@
 
                         <ul class="tags">
                             @foreach ($post->tags as $tag)
-                        <li><a href="#">{{ $tag->name }}</a></li>
+                        <li><a href="{{ route('tag.posts', $tag->slug) }}">{{ $tag->name }}</a></li>
                             @endforeach
                         </ul>
                     </div><!-- blog-post-inner -->
@@ -131,24 +131,24 @@
                         <h4 class="title"><b>TAG CLOUD</b></h4>
                         <ul>
                             @foreach ($tags as $tag)
-                                <li><a href="#">{{ $tag->name }}</a></li>
+                                <li><a href="{{ route('tag.posts', $tag->slug) }}">{{ $tag->name }}</a></li>
                             @endforeach
                             
                         </ul>
 
                     </div><!-- subscribe-area -->
                     <hr>
-                    {{-- <div class="tag-area">
+                    <div class="tag-area">
 
                         <h4 class="title"><b>Catigories</b></h4>
                         <ul>
                             @foreach ($post->categories as $category)
-                        <li><a href="#">{{ $category->name }}</a></li>
+                        <li><a href="{{ route('category.posts', $category->slug) }}">{{ $category->name }}</a></li>
                             @endforeach
                             
                         </ul>
 
-                    </div><!-- subscribe-area --> --}}
+                    </div><!-- subscribe-area -->
 
                 </div><!-- info-area -->
 

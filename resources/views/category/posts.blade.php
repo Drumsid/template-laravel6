@@ -1,69 +1,36 @@
 @extends('layouts.frontend.app')
 
-@section('title', 'Main')
+@section('title', 'Category Posts')
+
 
 @push('css')
-    <link href="{{ asset('assets/frontend/css/home/styles.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/frontend/css/categories/styles.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('assets/frontend/css/home/responsive.css') }}" rel="stylesheet">  
-    <style>
-        .favoritePost {
-            color: red;
-        }
-    </style>  
+<link href="{{ asset('assets/frontend/css/categories/responsive.css') }}" rel="stylesheet">
+<style>
+    .slider {
+    height: 400px;
+    width: 100%;
+    background-image: url({{ Storage::disk('public')->url('category/' . $category->image) }});
+    background-size: cover;
+}
+    .favoritePost {
+        color: red;
+    }
+</style>  
 @endpush
 
 @section('content')
-{{-- <h3>Categories</h3><br> --}}
-<div class="main-slider">
-    
-    <div class="swiper-container position-static" data-slide-effect="slide" data-autoheight="false"
-        data-swiper-speed="500" data-swiper-autoplay="10000" data-swiper-margin="0" data-swiper-slides-per-view="4"
-        data-swiper-breakpoints="true" data-swiper-loop="true" >
-        <div class="swiper-wrapper">
-
-            @foreach ($categories as $category)
-                <div class="swiper-slide">
-                <a class="slider-category" href="{{ route('category.posts', $category->slug) }}">
-                    <div class="blog-image"><img src="{{ Storage::disk('public')->url('category/slider/' . $category->image) }}" alt="Blog Image"></div>
-
-                        <div class="category">
-                            <div class="display-table center-text">
-                                <div class="display-table-cell">
-                                <h3><b>{{ $category->name }}</b></h3>
-                                </div>
-                            </div>
-                        </div>
-
-                    </a>
-                </div><!-- swiper-slide -->  
-            @endforeach
-
-
-        </div><!-- swiper-wrapper -->
-
-    </div><!-- swiper-container -->
-
+<div class="slider display-table center-text">
+<h1 class="title display-table-cell"><b>{{ $category->name }}</b></h1>
 </div><!-- slider -->
 
 <section class="blog-area section">
     <div class="container">
-        <h2>Last News</h2>
-        <br>
-        @if (session('successMsg'))
-            <div class="alert alert-success m-t-15" role="alert">
-            {{ session('successMsg') }}  
-            </div> 
-        @endif
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger m-t-15" role="alert">
-                    {{ $error }}  
-                </div> 
-            @endforeach
-        @endif
+
         <div class="row">
-            @foreach ($posts as $post)
+            @forelse ($category->posts as $post)
+                
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100">
                         <div class="single-post post-style-1">
@@ -80,7 +47,7 @@
                                     <li>
                                         {{-- если надо чтоб лайкал любой юзер, убираем условие гость и меняем в роутере post.favorite условие для авторизации, хотя так не сработает, наверно придется делать регистрацию--}}
                                         @guest
-                                    <a href="{{ route('post.details', $post->slug) }}" {{-- onclick="fav()" --}}><i class="ion-heart"></i>
+                                            <a href="{{ route('post.details', $post->slug) }}" {{-- onclick="fav()" --}}><i class="ion-heart"></i>
                                             {{ $post->favorite_to_users->count() }}
                                             </a>
                                         @else
@@ -100,29 +67,19 @@
                         </div><!-- single-post -->
                     </div><!-- card -->
                 </div><!-- col-lg-4 col-md-6 -->    
-            @endforeach
-
+                @empty
+                <p>Posts not found :(</p>
+                @endforelse ($posts as $post)
         </div><!-- row -->
 
-        <a class="load-more-btn" href="#"><b>LOAD MORE</b></a>
-
+        {{-- {{ $posts->links() }} --}}
     </div><!-- container -->
 </section><!-- section -->
+
+</section>
 @endsection
 
 @push('js')
-    <script src="{{ asset('assets/frontend/js/swiper.js') }}"></script>
-    <script src="{{ asset('assets/frontend/js/scripts.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script>
-        function fav()
-        {
-            Swal.fire({
-                position: 'top-end',
-                icon: 'info',
-                title: 'Oops...',
-                text: 'To liked this, you need login first!'
-                })
-        }
-    </script>
+<script src="{{ asset('assets/frontend/js/swiper.js') }}"></script>
+<script src="{{ asset('assets/frontend/js/scripts.js') }}"></script>
 @endpush
