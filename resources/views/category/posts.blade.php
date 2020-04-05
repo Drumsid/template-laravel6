@@ -29,7 +29,7 @@
     <div class="container">
 
         <div class="row">
-            @forelse ($category->posts as $post)
+            @forelse ($posts as $post)
                 
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100">

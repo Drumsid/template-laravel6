@@ -36,7 +36,14 @@
                                 <label class="form-label">Post Title</label>
                             </div>
                         </div>
+
                         <div class="form-group form-float">
+                            <hr>
+                            <div>
+                                <p>Current image</p>
+                                <img class="img-responsive thumbnail" src="{{ Storage::disk('public')
+                            ->url('post/' . $post->image) }}" alt="" height="120" width="120">
+                            </div>
                             <div class="form-line">
                                 <label for="image">Image</label>
                                 <input type="file" id="image" class="form-control {{ $errors->has('name') ? 'border-danger' : ''}}" name="image" value="{{ $post->image }}">
@@ -97,6 +104,7 @@
                 </div>
             </div>
         </div>
+
     </div>
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

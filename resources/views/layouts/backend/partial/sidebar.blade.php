@@ -111,7 +111,6 @@
                     <a href="{{ route('author.favorite.index') }}">
                         <i class="material-icons">favorite</i>
                         <span>Favorite Posts</span>
-                        <span class="badge bg-green {{ $postApprove->count() == 0 ? 'my-d-none' : '' }}">{{ $postApprove->count() }}</span>
                     </a>
                 </li>
                 <li class="{{ Request::is('author/post*') ? 'active' : '' }}">

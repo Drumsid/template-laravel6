@@ -12,21 +12,25 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::latest()->paginate(6);
+        $posts = Post::latest()->approved()->published()->paginate(6);
         return view('posts', compact('posts'));
     }
 
     public function details($slug)
     {
-        $post = Post::where('slug', $slug)->first();
+        $post = Post::approved()->published()->where('slug', $slug)->first();
 
+        if ($post == null) {
+            return redirect()->back();
+        }
         $blogKey = 'blog_' . $post->id;
         if (!Session::has($blogKey)) {
             $post->increment('view_count');
             Session::put($blogKey, 1);
         }
         // $randomPosts = Post::all()->random(3);
-        $randomPosts = Post::all()->where('id', '!=', $post->id)->random(3);
+        // $randomPosts = Post::all()->where('id', '!=', $post->id)->random(3);
+        $randomPosts = Post::approved()->published()->where('id', '!=', $post->id)->take(3)->inRandomOrder()->get();
         $tags = Tag::all();
         return view('post', compact('post', 'randomPosts', 'tags'));
     }
@@ -34,12 +38,14 @@ class PostController extends Controller
     public function postByCategory($slug)
     {
         $category = Category::where('slug', $slug)->first();
-        return view('category.posts', compact('category'));
+        $posts = $category->posts()->approved()->published()->get();
+        return view('category.posts', compact('category', 'posts'));
     }
 
     public function postByTag($slug)
     {
         $tag = Tag::where('slug', $slug)->first();
-        return view('tag.posts', compact('tag'));
+        $posts = $tag->posts()->approved()->published()->get();
+        return view('tag.posts', compact('tag', 'posts'));
     }
 }

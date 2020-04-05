@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('favorite/{post}/add', 'FavoriteController@add')->name('post.favorite');
 
     Route::post('comment/{post}', 'CommentController@store')->name('comment.store');
+
+    Route::get('search', 'SearchController@search')->name('search');
 });
 
 Route::group(

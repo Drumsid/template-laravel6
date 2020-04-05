@@ -26,7 +26,7 @@
             <div class="card">
                 <div class="header">
                     <h2>
-                        All Pending Posts
+                        All Favorite Posts
                         <span class="badge bg-green">{{ $posts->count() }}</span>
                     </h2>
                 

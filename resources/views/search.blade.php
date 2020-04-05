@@ -1,6 +1,6 @@
 @extends('layouts.frontend.app')
 
-@section('title', 'Category Posts')
+@section('title', 'Search')
 
 
 @push('css')
@@ -8,12 +8,6 @@
 
 <link href="{{ asset('assets/frontend/css/categories/responsive.css') }}" rel="stylesheet">
 <style>
-    .slider {
-    height: 400px;
-    width: 100%;
-    background-color: red;
-    background-size: cover;
-}
     .favoritePost {
         color: red;
     }
@@ -22,15 +16,20 @@
 
 @section('content')
 <div class="slider display-table center-text">
-<h1 class="title display-table-cell"><b>Tag #{{ $tag->name }}</b></h1>
+
+    @if ($posts == null)
+        <h1 class="title display-table-cell"><b>Input is empty!</b></h1>
+    @else
+        <h1 class="title display-table-cell"><b>{{ $posts->count() }} find search by {{ $query }}</b></h1>
+    @endif
+    
 </div><!-- slider -->
 
 <section class="blog-area section">
     <div class="container">
-
         <div class="row">
             @forelse ($posts as $post)
-                
+        
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100">
                         <div class="single-post post-style-1">
