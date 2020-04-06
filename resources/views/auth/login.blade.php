@@ -81,6 +81,9 @@
 
 
                 </div><!-- post-wrapper -->
+                <div class="post-wrapper">
+                <p class="text-center"><a href="{{ route('register') }}">Register</a></p>
+                </div><!-- post-wrapper -->
             </div><!-- col-sm-8 col-sm-offset-2 -->
         </div><!-- row -->
 

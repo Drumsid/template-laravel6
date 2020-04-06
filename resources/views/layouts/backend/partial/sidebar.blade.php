@@ -2,7 +2,7 @@
     <!-- User Info -->
     <div class="user-info">
         <div class="image">
-            <img src="{{ asset('assets/backend/images/user.png') }}" width="48" height="48" alt="User" />
+            <img src="{{ Storage::disk('public')->url('profile/' . Auth::user()->image ) }}" width="48" height="48" alt="User" />
         </div>
         <div class="info-container">
             <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->name }}</div>
@@ -37,6 +37,12 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
+                <li class="{{ Request::is('admin/author*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.author.index') }}">
+                        <i class="material-icons">person</i>
+                        <span>All Authors</span>
+                    </a>
+                </li>
                 <li class="{{ Request::is('admin/tag*') ? 'active' : '' }}">
                     <a href="{{ route('admin.tag.index') }}">
                         <i class="material-icons">label</i>
@@ -57,7 +63,7 @@
                 </li>
                 <li class="{{ Request::is('admin/pending/post') ? 'active' : '' }}">
                     <a href="{{ route('admin.post.pending') }}">
-                        <i class="material-icons">library_books</i>
+                        <i class="material-icons">create</i>
                         <span>Pending Posts</span>
                         <span class="badge bg-green {{ $postApprove->count() == 0 ? 'my-d-none' : '' }}">{{ $postApprove->count() }}</span>
                     </a>
@@ -117,6 +123,12 @@
                     <a href="{{ route('author.post.index') }}">
                         <i class="material-icons">library_books</i>
                         <span>Posts</span>
+                    </a>
+                </li>
+                <li class="{{ Request::is('author/comments') ? 'active' : '' }}">
+                    <a href="{{ route('author.comments.index') }}">
+                        <i class="material-icons">comment</i>
+                        <span>All Comments</span>
                     </a>
                 </li>
                 <li class="header">System</li>

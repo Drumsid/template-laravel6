@@ -1,6 +1,6 @@
 @extends('layouts.backend.app')
 
-@section('title', 'Admin Comments')
+@section('title', 'Author Comments')
 
 @push('css')
     <link href="{{ asset('assets/backend/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css') }}" rel="stylesheet">

@@ -23,6 +23,10 @@ Route::get('tag/{slug}', 'PostController@postByTag')->name('tag.posts');
 Route::get('posts', 'PostController@index')->name('post.index');
 Route::get('post/{slug}', 'PostController@details')->name('post.details');
 
+Route::get('search', 'SearchController@search')->name('search');
+
+Route::get('/profile/{username}', 'AuthorController@profile')->name('author.profile');
+
 Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
@@ -32,7 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('comment/{post}', 'CommentController@store')->name('comment.store');
 
-    Route::get('search', 'SearchController@search')->name('search');
+    // Route::get('search', 'SearchController@search')->name('search');
 });
 
 Route::group(
@@ -56,6 +60,9 @@ Route::group(
         Route::get('/subscriber', 'SubscriberController@index')->name('subscriber.index');
         Route::delete('/subscriber/{subscriber}', 'SubscriberController@destroy')->name('subscriber.destroy');
 
+        Route::get('/author', 'AuthorController@index')->name('author.index');
+        Route::delete('/author/{author}', 'AuthorController@destroy')->name('author.destroy');
+
         Route::get('/comments', 'CommentController@index')->name('comments.index');
         Route::delete('/comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
     }
@@ -72,5 +79,8 @@ Route::group(
 
         Route::get('dashboard', 'DashboardController@index')->name('dashboard');
         Route::resource('post', 'PostController');
+
+        Route::get('/comments', 'CommentController@index')->name('comments.index');
+        Route::delete('/comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
     }
 );

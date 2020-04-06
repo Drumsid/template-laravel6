@@ -1,6 +1,6 @@
 @extends('layouts.backend.app')
 
-@section('title', 'Admin Comments')
+@section('title', 'All Authors')
 
 @push('css')
     <link href="{{ asset('assets/backend/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css') }}" rel="stylesheet">
@@ -8,11 +8,10 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="block-header">
+
     @if (session('successMsg'))
         <div class="alert alert-success m-t-15" role="alert">
           {{ session('successMsg') }}  
-        </div> 
     @endif
 
     </div>
@@ -25,8 +24,8 @@
             <div class="card">
                 <div class="header">
                     <h2>
-                        All Comments
-                        <span class="badge bg-green">{{ $comments->count() }}</span>
+                        All Authors
+                        <span class="badge bg-green">{{ $authors->count() }}</span>
                     </h2>
                 </div>
                 <div class="body">
@@ -34,62 +33,46 @@
                         <table class="table table-bordered table-striped table-hover dataTable js-exportable">
                             <thead>
                                 <tr>
-                                    <th>Comments info</th>
-                                    <th>Post info</th>
+                                    <th>Count</th>
+                                    <th>Name</th>
+                                    <th>Posts</th>
+                                    <th>Coments</th>
+                                    <th>Favorit posts count</th>
+                                    <th>Created At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Comments info</th>
-                                    <th>Post info</th>
+                                    <th>Count</th>
+                                    <th>Name</th>
+                                    <th>Posts</th>
+                                    <th>Coments</th>
+                                    <th>Favorit posts count</th>
+                                    <th>Created At</th>
                                     <th>Action</th>
                                 </tr>
                             </tfoot>
 
                             <tbody>
-                                @foreach ($comments as $key => $comment)
+                                @foreach ($authors as $key => $author)
                                     <tr>
-                                        <td>
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <a href="">
-                                                        <img src="{{ Storage::disk('public')->url('profile/' . $comment->user->image) }}" height="64" width="64" class="media-object">
-                                                    </a>
-                                                </div>
-                                                <div class="media-body">
-                                                    <h4>{{ $comment->user->name }}
-                                                    <small>{{ $comment->created_at->toFormattedDateString() }}</small>
-                                                    </h4>
-                                                <p>{{ $comment->comment }}</p>
-                                                <a target="/blank" href="{{ route('post.details', $comment->post->slug . '#comments' . $comment->id) }}">Replay</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <a target="/blank" href="{{ route('post.details', $comment->post->slug) }}">
-                                                        <img src="{{ Storage::disk('public')->url('post/' . $comment->post->image) }}" height="64" width="64" class="media-object">
-                                                    </a>
-                                                </div>
-                                                <div class="media-body">
-                                                    <a target="/blank" href="{{ route('post.details', $comment->post->slug) }}">
-                                                        <h4 class="media-heading">
-                                                            {{ str_limit($comment->post->title, 40) }}
-                                                        </h4>
-                                                    </a>
-                                                    <p>by <strong>{{ $comment->post->user->name }}</strong></p>
-                                                </div>
-
-                                            </div>
-                                        </td>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $author->name }}</td>
+                                        <td><span class="badge bg-green">{{ $author->posts_count }}</span></td>
+                                        <td><span class="badge bg-green">{{ $author->favorite_posts_count }}</span></td>
+                                        <td><span class="badge bg-green">{{ $author->comments_count }}</span></td>
+                                        <td>{{ $author->created_at }}</td>
                                         <td class="text-center">
-                                        <button class="btn btn-danger waves-effect" onclick="deleteComment({{ $comment->id }})">
+                                            {{-- Надо сделать редактирование юзеров --}}
+                                        {{-- <a href="" class="btn btn-info waves-effect">
+                                            <i class="material-icons">edit</i>
+                                        </a> --}}
+                                        <button class="btn btn-danger waves-effect" onclick="deleteAuthor({{ $author->id }})">
                                             <i class="material-icons">delete</i>
                                         </button>
 
-                                    <form id="delete-form-{{ $comment->id }}" action="{{ route('admin.comments.destroy', $comment) }}" method="POST" style="display:none;">
+                                    <form id="delete-form-{{ $author->id }}" action="{{ route('admin.author.destroy', $author) }}" method="POST" style="display:none;">
                                         @csrf
                                         @method('DELETE')
                                     </form>
@@ -123,7 +106,7 @@
     <script src="{{ asset('assets/backend/js/pages/tables/jquery-datatable.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
-        function deleteComment(id)
+        function deleteAuthor(id)
         {
             const swalWithBootstrapButtons = Swal.mixin({
             customClass: {

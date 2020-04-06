@@ -1,11 +1,28 @@
-@extends('layouts.app')
+@extends('layouts.frontend.app')
+
+@section('title', 'reset')
+
+@push('css')
+    <link href="{{ asset('assets/frontend/css/auth/styles.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('assets/frontend/css/auth/responsive.css') }}" rel="stylesheet">    
+@endpush
 
 @section('content')
+<div class="slider display-table center-text">
+    <h1 class="title display-table-cell"><b>Reset password</b></h1>
+</div><!-- slider -->
+<br>
+<br>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+
+        <div class="col-lg-8 col-md-12">
+            <div class="post-wrapper">
+<br>
+<p>Reset password</p>
+<br>
+<br>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,7 +30,6 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
                     <form method="POST" action="{{ route('password.email') }}">
                         @csrf
 
@@ -44,4 +60,5 @@
         </div>
     </div>
 </div>
+<br>
 @endsection
