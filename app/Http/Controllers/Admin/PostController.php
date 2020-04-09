@@ -190,13 +190,13 @@ class PostController extends Controller
         ]);
 
         // оповещения на почту будут проблемы если, просто убрать этот блок
-        $post->user->notify(new AuthorPostAprroved($post));
+        // $post->user->notify(new AuthorPostAprroved($post));
 
-        $subscribers = Subscriber::all();
-        foreach ($subscribers as $subscriber) {
-            Notification::route('mail', $subscriber->email)
-                ->notify(new NewPostNotify($post));
-        }
+        // $subscribers = Subscriber::all();
+        // foreach ($subscribers as $subscriber) {
+        //     Notification::route('mail', $subscriber->email)
+        //         ->notify(new NewPostNotify($post));
+        // }
 
         return redirect(route('admin.post.pending'))->with('successMsg', 'Post approved!!!');
     }
